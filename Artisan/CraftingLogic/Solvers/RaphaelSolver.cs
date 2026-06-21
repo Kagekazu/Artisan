@@ -35,7 +35,9 @@ namespace Artisan.CraftingLogic.Solvers
 
             if (RaphaelCache.HasSolution(craft, out var output))
             {
-                return new MacroSolver(output!, craft);
+                var macro = output!.JSONClone();
+                macro.Options.SkipQualityIfMet = P.Config.RaphaelSolverConfig.SkipQualityIfMet;
+                return new MacroSolver(macro, craft);
             }
             return craft.CraftExpert ? new ExpertSolver() : new StandardSolver();
         }
@@ -741,6 +743,7 @@ namespace Artisan.CraftingLogic.Solvers
         public bool FallbackToSolverIfRaphaelLocked = true;
         public string FallbackSolverType = typeof(StandardSolverDefinition).FullName!;
         public int FallbackSolverFlavour = 0;
+        public bool SkipQualityIfMet = false;
         public bool Draw()
         {
             bool changed = false;
@@ -852,6 +855,9 @@ namespace Artisan.CraftingLogic.Solvers
 
                     ImGui.Unindent();
                 }
+
+                changed |= ImGui.Checkbox("Skip quality actions if quality is complete", ref SkipQualityIfMet);
+                ImGuiComponents.HelpMarker("Skips the remaining quality steps of the Raphael macro once the live craft has reached the target quality, jumping straight to the progress phase. Avoids wasting CP and durability on already-capped quality when favourable conditions over-deliver.");
 
                 ImGui.Dummy(new Vector2(0, 5f));
                 if (ImGui.Button($"Clear Raphael Macro Cache (currently {P.Config.RaphaelSolverCacheV6.Count} stored)"))

@@ -7,10 +7,6 @@ using System.Linq;
 
 namespace Artisan.CraftingLists;
 
-/// <summary>
-/// Premade crafting lists for DoH relic-tool collectable steps.
-/// List ID = <see cref="IdBase"/> + step ordinal * 10 + craft type (CRP=0 … CUL=7).
-/// </summary>
 internal static partial class RelicToolPremadeLists
 {
     internal const int IdBase = 900_000;
